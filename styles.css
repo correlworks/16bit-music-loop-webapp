@@ -1,0 +1,613 @@
+/* 16-Bit Music Loop Composer - Enhanced CSS
+ * A retro-inspired interface for creating 16-bit style music loops
+ */
+
+/* CSS Variables for consistent theming */
+:root {
+    /* Main color scheme inspired by 16-bit era interfaces */
+    --primary-color: #2a2a72;      /* Deep blue */
+    --secondary-color: #00b4d8;    /* Bright cyan */
+    --accent-color: #ff7b25;       /* Orange accent */
+    --accent-secondary: #ff4081;   /* Pink accent */
+    
+    /* Background and surface colors */
+    --background-color: #121212;   /* Dark background */
+    --grid-color: #1e1e2f;         /* Slightly lighter for grid */
+    --surface-color: #252538;      /* Surface elements */
+    
+    /* Text colors */
+    --text-color: #f0f0f0;         /* Light text */
+    --text-secondary: #a0a0a0;     /* Secondary text */
+    
+    /* Step sequencer colors */
+    --step-inactive: #3a3a4a;      /* Inactive step */
+    --step-active: #00c853;        /* Active step */
+    --step-current: #ff4081;       /* Currently playing step */
+    --step-hover: #4a4a5a;         /* Hover state */
+    
+    /* Track colors - for different instrument rows */
+    --track-kick: #5d4037;
+    --track-snare: #7b1fa2;
+    --track-hihat: #0288d1;
+    --track-percussion: #689f38;
+    --track-bass: #d32f2f;
+    --track-lead: #ffa000;
+    --track-chord: #00796b;
+    --track-effect: #5e35b1;
+    
+    /* Borders and shadows */
+    --pixel-border: 2px solid #000;
+    --inner-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    --outer-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    
+    /* Animation speeds */
+    --transition-fast: 0.1s;
+    --transition-normal: 0.2s;
+}
+
+/* Base styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    background-color: var(--background-color);
+    background-image: 
+        linear-gradient(rgba(32, 32, 48, 0.7) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(32, 32, 48, 0.7) 1px, transparent 1px);
+    background-size: 20px 20px;
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* For screen readers */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Header styles */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 4px solid var(--secondary-color);
+    position: relative;
+}
+
+header::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--accent-color);
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.7);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+}
+
+section {
+    margin-bottom: 40px;
+    position: relative;
+}
+
+/* Transport Controls */
+.transport-controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.controls-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--grid-color);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: var(--outer-shadow);
+    border: var(--pixel-border);
+    position: relative;
+}
+
+.controls-container::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: 2px solid #000;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    position: relative;
+    font-family: inherit;
+}
+
+button::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    height: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px 2px 0 0;
+    pointer-events: none;
+}
+
+button:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 #000;
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+#play-pause {
+    background-color: var(--accent-color);
+    padding: 12px 20px;
+    font-size: 1.4rem;
+}
+
+#stop {
+    background-color: var(--primary-color);
+}
+
+.tempo-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--surface-color);
+    padding: 10px;
+    border-radius: 4px;
+    border: var(--pixel-border);
+}
+
+.tempo-control label {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+#tempo-value {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+input[type="range"] {
+    width: 150px;
+    margin-top: 5px;
+    -webkit-appearance: none;
+    height: 10px;
+    background: var(--step-inactive);
+    border-radius: 5px;
+    border: 1px solid #000;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--accent-color);
+    border: 2px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--accent-color);
+    border: 2px solid #000;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Sequencer Grid */
+.sequencer-container {
+    display: flex;
+    background-color: var(--grid-color);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--outer-shadow);
+    border: var(--pixel-border);
+    position: relative;
+}
+
+.sequencer-container::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.track-labels {
+    display: flex;
+    flex-direction: column;
+    margin-right: 15px;
+    gap: 5px;
+}
+
+.track-label {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    font-weight: bold;
+    min-width: 100px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    border: 2px solid #000;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    transition: background-color var(--transition-normal);
+}
+
+/* Assign specific colors to each track label */
+.track-label[data-track="kick"] {
+    background-color: var(--track-kick);
+}
+
+.track-label[data-track="snare"] {
+    background-color: var(--track-snare);
+}
+
+.track-label[data-track="hihat"] {
+    background-color: var(--track-hihat);
+}
+
+.track-label[data-track="percussion"] {
+    background-color: var(--track-percussion);
+}
+
+.track-label[data-track="bass"] {
+    background-color: var(--track-bass);
+}
+
+.track-label[data-track="lead"] {
+    background-color: var(--track-lead);
+}
+
+.track-label[data-track="chord"] {
+    background-color: var(--track-chord);
+}
+
+.track-label[data-track="effect"] {
+    background-color: var(--track-effect);
+}
+
+.grid-container {
+    flex-grow: 1;
+    overflow-x: auto;
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    border: 1px solid #000;
+}
+
+.beat-indicators {
+    display: flex;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.beat-indicator {
+    width: 40px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.7rem;
+    color: var(--text-color);
+    opacity: 0.7;
+    margin-right: 5px;
+}
+
+/* Make every 4th beat indicator more prominent */
+.beat-indicator:nth-child(4n+1) {
+    color: var(--accent-color);
+    opacity: 1;
+    font-weight: bold;
+}
+
+.sequencer-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.track {
+    display: flex;
+    gap: 5px;
+    padding: 2px 0;
+}
+
+/* Match track background colors to their labels */
+.track[data-track="kick"] .step.active {
+    background-color: var(--track-kick);
+}
+
+.track[data-track="snare"] .step.active {
+    background-color: var(--track-snare);
+}
+
+.track[data-track="hihat"] .step.active {
+    background-color: var(--track-hihat);
+}
+
+.track[data-track="percussion"] .step.active {
+    background-color: var(--track-percussion);
+}
+
+.track[data-track="bass"] .step.active {
+    background-color: var(--track-bass);
+}
+
+.track[data-track="lead"] .step.active {
+    background-color: var(--track-lead);
+}
+
+.track[data-track="chord"] .step.active {
+    background-color: var(--track-chord);
+}
+
+.track[data-track="effect"] .step.active {
+    background-color: var(--track-effect);
+}
+
+.step {
+    width: 40px;
+    height: 40px;
+    background-color: var(--step-inactive);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: 2px solid #000;
+    position: relative;
+    box-shadow: var(--inner-shadow);
+}
+
+/* Create a subtle 3D effect for steps */
+.step::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    height: 30%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px 2px 0 0;
+    pointer-events: none;
+}
+
+.step:hover {
+    background-color: var(--step-hover);
+    transform: translateY(-2px);
+}
+
+.step[data-active="true"], .step.active {
+    background-color: var(--step-active);
+    box-shadow: 0 0 10px rgba(0, 200, 83, 0.5);
+}
+
+.step.current {
+    border: 2px solid var(--step-current);
+    box-shadow: 0 0 10px var(--step-current);
+}
+
+/* Every 4th step has a different background to help with visual rhythm */
+.step:nth-child(4n+1) {
+    background-color: var(--step-inactive);
+    opacity: 0.9;
+}
+
+/* Waveform Viewer */
+.waveform-viewer {
+    margin-top: 40px;
+}
+
+.waveform-container {
+    height: 150px;
+    background-color: var(--grid-color);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: var(--outer-shadow);
+    border: var(--pixel-border);
+    position: relative;
+}
+
+.waveform-container::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+#waveform-canvas {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    border: 1px solid #000;
+}
+
+/* Track Controls */
+.track-controls-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px 0;
+    border-top: 2px solid var(--grid-color);
+    font-size: 0.8rem;
+    opacity: 0.7;
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .sequencer-container {
+        flex-direction: column;
+        padding: 15px;
+    }
+    
+    .track-labels {
+        flex-direction: row;
+        margin-right: 0;
+        margin-bottom: 15px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+    }
+    
+    .track-label {
+        height: auto;
+        margin-bottom: 0;
+        margin-right: 5px;
+        padding: 5px 10px;
+        min-width: 80px;
+        font-size: 0.7rem;
+    }
+    
+    .controls-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .tempo-control {
+        margin-top: 15px;
+        width: 100%;
+    }
+    
+    input[type="range"] {
+        width: 100%;
+    }
+    
+    .step {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .beat-indicator {
+        width: 30px;
+    }
+}
+
+/* Animation for the currently playing step */
+@keyframes pulse {
+    0% { box-shadow: 0 0 5px var(--step-current); }
+    50% { box-shadow: 0 0 15px var(--step-current); }
+    100% { box-shadow: 0 0 5px var(--step-current); }
+}
+
+.step.current.active {
+    animation: pulse 0.5s infinite alternate;
+}
+
+/* Add a retro scanline effect to the entire interface */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.15;
+}
+
+/* Add a subtle CRT effect on hover for interactive elements */
+button:hover, .step:hover {
+    text-shadow: 0 0 5px var(--text-color);
+}
+
+/* Font loading for retro typography */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');

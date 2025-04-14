@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A 16-bit style music loop composer for creating retro game music">
+    <meta name="keywords" content="music, sequencer, 16-bit, chiptune, retro, game music">
+    <title>16-Bit Music Loop Composer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>16-Bit Music Loop Composer</h1>
+    </header>
+
+    <main>
+        <section class="transport-controls">
+            <h2 class="visually-hidden">Transport Controls</h2>
+            <div class="controls-container">
+                <button id="play-pause" aria-label="Play or pause sequence">
+                    <span class="play-icon">▶</span>
+                    <span class="pause-icon hidden">⏸</span>
+                </button>
+                <button id="stop" aria-label="Stop sequence">⏹</button>
+                <div class="tempo-control">
+                    <label for="tempo">Tempo: <span id="tempo-value">120</span> BPM</label>
+                    <input type="range" id="tempo" name="tempo" min="60" max="200" value="120">
+                </div>
+            </div>
+        </section>
+
+        <section class="sequencer">
+            <h2 class="visually-hidden">Step Sequencer</h2>
+            <div class="sequencer-container">
+                <div class="track-labels">
+                    <div class="track-label" data-track="kick">Kick</div>
+                    <div class="track-label" data-track="snare">Snare</div>
+                    <div class="track-label" data-track="hihat">Hi-hat</div>
+                    <div class="track-label" data-track="percussion">Percussion</div>
+                    <div class="track-label" data-track="bass">Bass</div>
+                    <div class="track-label" data-track="lead">Lead</div>
+                    <div class="track-label" data-track="chord">Chord/Pad</div>
+                    <div class="track-label" data-track="effect">Effect</div>
+                </div>
+                
+                <div class="grid-container">
+                    <div id="beat-indicators" class="beat-indicators">
+                        <!-- Beat numbers will be added via JavaScript -->
+                    </div>
+                    
+                    <div id="sequencer-grid" class="sequencer-grid">
+                        <!-- Each track row with 16 steps -->
+                        <div class="track" data-track="kick">
+                            <!-- 16 step cells will be added via JavaScript -->
+                        </div>
+                        <div class="track" data-track="snare">
+                            <!-- 16 step cells will be added via JavaScript -->
+                        </div>
+                        <div class="track" data-track="hihat">
+                            <!-- 16 step cells will be added via JavaScript -->
+                        </div>
+                        <div class="track" data-track="percussion">
+                            <!-- 16 step cells will be added via JavaScript -->
+                        </div>
+                        <div class="track" data-track="bass">
+                            <!-- 16 step cells will be added via JavaScript -->
+                        </div>
+                        <div class="track" data-track="lead">
+                            <!-- 16 step cells will be added via JavaScript -->
+                        </div>
+                        <div class="track" data-track="chord">
+                            <!-- 16 step cells will be added via JavaScript -->
+                        </div>
+                        <div class="track" data-track="effect">
+                            <!-- 16 step cells will be added via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="waveform-viewer">
+            <h2>Waveform Viewer</h2>
+            <div id="waveform-container" class="waveform-container">
+                <canvas id="waveform-canvas"></canvas>
+            </div>
+        </section>
+
+        <section class="track-controls">
+            <h2>Track Controls</h2>
+            <div class="track-controls-container">
+                <!-- Track control panels will be added via JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>16-Bit Music Loop Composer &copy; 2025</p>
+    </footer>
+
+    <!-- JavaScript files -->
+    <script src="js/audio-engine.js"></script>
+    <script src="js/sequencer.js"></script>
+    <script src="js/waveform.js"></script>
+    <script src="js/ui-controller.js"></script>
+    <script src="js/main.js"></script>
+    <script src="test-waveform.js"></script>
+</body>
+</html>
