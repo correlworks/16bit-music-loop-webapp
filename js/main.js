@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the audio engine, sequencer, and UI controller
     initializeApplication();
+    
+    // Add mobile audio context initialization
+    setupMobileAudio();
 });
 
 function initializeSequencerGrid() {
@@ -167,3 +170,48 @@ function createDemoPattern() {
 // Call this function to load a demo pattern
 // Uncomment the line below if you want to start with a demo pattern
 createDemoPattern();
+
+// Add mobile audio context initialization
+function setupMobileAudio() {
+    // Create a single button for audio initialization
+    const audioInitButton = document.createElement('button');
+    audioInitButton.id = 'audio-init-button';
+    audioInitButton.textContent = 'Enable Audio';
+    audioInitButton.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 20px;
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+        display: none;
+    `;
+    
+    document.body.appendChild(audioInitButton);
+    
+    // Check if we need to show the initialization button
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+        audioInitButton.style.display = 'block';
+        
+        audioInitButton.addEventListener('click', function() {
+            // Initialize audio context
+            if (audioEngine && !audioEngine.isInitialized) {
+                audioEngine.init();
+            }
+            
+            // Hide the button
+            this.style.display = 'none';
+            
+            // Resume audio context if it was suspended
+            if (audioEngine.audioContext && audioEngine.audioContext.state === 'suspended') {
+                audioEngine.audioContext.resume();
+            }
+        });
+    }
+}
