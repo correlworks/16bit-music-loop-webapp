@@ -182,14 +182,16 @@ function setupMobileAudio() {
         bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
-        padding: 10px 20px;
+        padding: 15px 30px;
         background-color: var(--accent-color);
         color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         z-index: 1000;
-        display: none;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     `;
     
     document.body.appendChild(audioInitButton);
@@ -199,18 +201,48 @@ function setupMobileAudio() {
     if (isMobile) {
         audioInitButton.style.display = 'block';
         
-        audioInitButton.addEventListener('click', function() {
-            // Initialize audio context
-            if (audioEngine && !audioEngine.isInitialized) {
-                audioEngine.init();
-            }
-            
-            // Hide the button
-            this.style.display = 'none';
-            
-            // Resume audio context if it was suspended
-            if (audioEngine.audioContext && audioEngine.audioContext.state === 'suspended') {
-                audioEngine.audioContext.resume();
+        audioInitButton.addEventListener('click', async function() {
+            try {
+                // Initialize audio context
+                if (audioEngine && !audioEngine.isInitialized) {
+                    await audioEngine.init();
+                }
+                
+                // Resume audio context if it was suspended
+                if (audioEngine.audioContext && audioEngine.audioContext.state === 'suspended') {
+                    await audioEngine.audioContext.resume();
+                }
+                
+                // Hide the button
+                this.style.display = 'none';
+                
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.textContent = 'Audio enabled!';
+                successMessage.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    padding: 10px 20px;
+                    background-color: #4CAF50;
+                    color: white;
+                    border-radius: 5px;
+                    z-index: 1000;
+                `;
+                document.body.appendChild(successMessage);
+                
+                // Remove success message after 2 seconds
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error initializing audio:', error);
+                this.textContent = 'Error: Try Again';
+                setTimeout(() => {
+                    this.textContent = 'Enable Audio';
+                }, 2000);
             }
         });
     }

@@ -5,42 +5,48 @@
 
 class AudioEngine {
     constructor() {
-        // Initialize Web Audio API context
         this.audioContext = null;
         this.isInitialized = false;
+        this.tempo = 120;
+        this.samples = {};
+        this.analyser = null;
         this.sounds = {};
         this.masterGain = null;
-        this.analyser = null; // Added analyser node
         this.isPlaying = false;
-        this.tempo = 120;
         this.nextStepTime = 0;
         this.scheduleAheadTime = 0.1; // seconds ahead to schedule audio
     }
     
-    // Initialize audio context (must be called after user interaction)
-    init() {
+    async init() {
         if (this.isInitialized) return;
         
         try {
+            // Create audio context
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            this.masterGain = this.audioContext.createGain();
             
-            // Create analyser node for waveform visualization
+            // Create analyser for waveform visualization
             this.analyser = this.audioContext.createAnalyser();
-            this.analyser.fftSize = 2048; // Large enough for detailed waveform
-            this.analyser.smoothingTimeConstant = 0.8; // Smooth transitions
+            this.analyser.fftSize = 2048;
             
-            // Connect master gain to analyser, then to destination
-            this.masterGain.connect(this.analyser);
+            // Connect analyser to destination
             this.analyser.connect(this.audioContext.destination);
+            
+            // Load samples
+            await this.loadSamples();
             
             this.isInitialized = true;
             console.log('Audio engine initialized');
             
+            // Resume audio context if it was suspended
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+            }
+            
             // Load default sounds
             this.loadDefaultSounds();
         } catch (error) {
-            console.error('Failed to initialize audio engine:', error);
+            console.error('Error initializing audio engine:', error);
+            throw error;
         }
     }
     
