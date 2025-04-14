@@ -12,9 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize the audio engine, sequencer, and UI controller
     initializeApplication();
-    
-    // Add mobile audio context initialization
-    setupMobileAudio();
 });
 
 function initializeSequencerGrid() {
@@ -170,80 +167,3 @@ function createDemoPattern() {
 // Call this function to load a demo pattern
 // Uncomment the line below if you want to start with a demo pattern
 createDemoPattern();
-
-// Add mobile audio context initialization
-function setupMobileAudio() {
-    // Create a single button for audio initialization
-    const audioInitButton = document.createElement('button');
-    audioInitButton.id = 'audio-init-button';
-    audioInitButton.textContent = 'Enable Audio';
-    audioInitButton.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 15px 30px;
-        background-color: var(--accent-color);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        z-index: 1000;
-        font-size: 16px;
-        font-weight: bold;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    `;
-    
-    document.body.appendChild(audioInitButton);
-    
-    // Check if we need to show the initialization button
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    if (isMobile) {
-        audioInitButton.style.display = 'block';
-        
-        audioInitButton.addEventListener('click', async function() {
-            try {
-                // Initialize audio context
-                if (audioEngine && !audioEngine.isInitialized) {
-                    await audioEngine.init();
-                }
-                
-                // Resume audio context if it was suspended
-                if (audioEngine.audioContext && audioEngine.audioContext.state === 'suspended') {
-                    await audioEngine.audioContext.resume();
-                }
-                
-                // Hide the button
-                this.style.display = 'none';
-                
-                // Show success message
-                const successMessage = document.createElement('div');
-                successMessage.textContent = 'Audio enabled!';
-                successMessage.style.cssText = `
-                    position: fixed;
-                    bottom: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    padding: 10px 20px;
-                    background-color: #4CAF50;
-                    color: white;
-                    border-radius: 5px;
-                    z-index: 1000;
-                `;
-                document.body.appendChild(successMessage);
-                
-                // Remove success message after 2 seconds
-                setTimeout(() => {
-                    successMessage.remove();
-                }, 2000);
-                
-            } catch (error) {
-                console.error('Error initializing audio:', error);
-                this.textContent = 'Error: Try Again';
-                setTimeout(() => {
-                    this.textContent = 'Enable Audio';
-                }, 2000);
-            }
-        });
-    }
-}
