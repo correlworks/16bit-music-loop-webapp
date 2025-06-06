@@ -455,9 +455,22 @@ input[type="range"]::-moz-range-thumb {
     opacity: 0.9;
 }
 
+/* Layout container for sequencer and waveform */
+.sequencer-waveform-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Allow sequencer to take more space */
+.sequencer {
+    flex: 2;
+}
+
 /* Waveform Viewer */
 .waveform-viewer {
-    margin-top: 40px;
+    margin-top: 0;
+    flex: 1;
 }
 
 .waveform-container {
@@ -590,6 +603,14 @@ footer::before {
     
     .beat-indicator {
         width: 30px;
+    }
+
+    .sequencer-waveform-container {
+        flex-direction: column;
+    }
+
+    .waveform-viewer {
+        margin-top: 20px;
     }
 }
 
