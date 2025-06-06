@@ -497,6 +497,25 @@ input[type="range"]::-moz-range-thumb {
     gap: 20px;
 }
 
+.track-control {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--surface-color);
+    padding: 10px;
+    border-radius: 4px;
+    border: var(--pixel-border);
+}
+
+.track-control label {
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.track-control input[type="range"] {
+    width: 100%;
+}
+
 /* Footer */
 footer {
     text-align: center;

@@ -10,6 +10,8 @@ class AudioEngine {
         this.isInitialized = false;
         this.sounds = {};
         this.masterGain = null;
+        this.trackGains = {};
+        this.trackNames = ['kick', 'snare', 'hihat', 'percussion', 'bass', 'lead', 'chord', 'effect'];
         this.analyser = null; // Added analyser node
         this.isPlaying = false;
         this.tempo = 120;
@@ -24,7 +26,15 @@ class AudioEngine {
         try {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
             this.masterGain = this.audioContext.createGain();
-            
+
+            // Create per-track gain nodes
+            this.trackNames.forEach(name => {
+                const gain = this.audioContext.createGain();
+                gain.gain.value = 1;
+                gain.connect(this.masterGain);
+                this.trackGains[name] = gain;
+            });
+
             // Create analyser node for waveform visualization
             this.analyser = this.audioContext.createAnalyser();
             this.analyser.fftSize = 2048; // Large enough for detailed waveform
@@ -77,7 +87,7 @@ class AudioEngine {
             gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.3);
             
             osc.connect(gainNode);
-            gainNode.connect(this.masterGain);
+            gainNode.connect(this.trackGains.kick);
             
             osc.start(time);
             osc.stop(time + 0.3);
@@ -114,10 +124,10 @@ class AudioEngine {
             
             // Connect everything
             noise.connect(noiseGain);
-            noiseGain.connect(this.masterGain);
-            
+            noiseGain.connect(this.trackGains.snare);
+
             osc.connect(oscGain);
-            oscGain.connect(this.masterGain);
+            oscGain.connect(this.trackGains.snare);
             
             noise.start(time);
             osc.start(time);
@@ -149,7 +159,7 @@ class AudioEngine {
             
             noise.connect(noiseFilter);
             noiseFilter.connect(noiseGain);
-            noiseGain.connect(this.masterGain);
+            noiseGain.connect(this.trackGains.hihat);
             
             noise.start(time);
         };
@@ -169,7 +179,7 @@ class AudioEngine {
             gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
             
             osc.connect(gainNode);
-            gainNode.connect(this.masterGain);
+            gainNode.connect(this.trackGains.percussion);
             
             osc.start(time);
             osc.stop(time + 0.2);
@@ -195,7 +205,7 @@ class AudioEngine {
             
             osc.connect(filter);
             filter.connect(gainNode);
-            gainNode.connect(this.masterGain);
+            gainNode.connect(this.trackGains.bass);
             
             osc.start(time);
             osc.stop(time + 0.4);
@@ -215,7 +225,7 @@ class AudioEngine {
             gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
             
             osc.connect(gainNode);
-            gainNode.connect(this.masterGain);
+            gainNode.connect(this.trackGains.lead);
             
             osc.start(time);
             osc.stop(time + 0.3);
@@ -239,7 +249,7 @@ class AudioEngine {
                 gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
                 
                 osc.connect(gainNode);
-                gainNode.connect(this.masterGain);
+                gainNode.connect(this.trackGains.chord);
                 
                 oscillators.push(osc);
                 
@@ -263,7 +273,7 @@ class AudioEngine {
             gainNode.gain.exponentialRampToValueAtTime(0.01, time + 0.3);
             
             osc.connect(gainNode);
-            gainNode.connect(this.masterGain);
+            gainNode.connect(this.trackGains.effect);
             
             osc.start(time);
             osc.stop(time + 0.3);
@@ -313,6 +323,14 @@ class AudioEngine {
     setTempo(bpm) {
         this.tempo = bpm;
         console.log(`Tempo set to ${bpm} BPM`);
+    }
+
+    // Set volume for a specific track (0.0 to 1.0)
+    setTrackVolume(trackName, volume) {
+        if (this.trackGains[trackName]) {
+            this.trackGains[trackName].gain.value = volume;
+            console.log(`Volume for ${trackName} set to ${volume}`);
+        }
     }
 }
 
