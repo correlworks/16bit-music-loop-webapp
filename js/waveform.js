@@ -15,10 +15,11 @@ class WaveformViewer {
         
         // Visualization settings
         this.colors = {
-            background: '#1a1a1a',
-            waveform: '#00ffcc',
+            // Red background with blue waveform as requested
+            background: '#ff0000',
+            waveform: '#0000ff',
             grid: '#333333',
-            glow: 'rgba(0, 255, 204, 0.4)'
+            glow: 'rgba(0, 0, 255, 0.4)'
         };
     }
     
