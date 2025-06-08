@@ -6,10 +6,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize the sequencer grid
     initializeSequencerGrid();
-    
+
     // Initialize beat indicators
     initializeBeatIndicators();
-    
+
+    // Create track volume controls
+    initializeTrackControls();
+
     // Initialize the audio engine, sequencer, and UI controller
     initializeApplication();
 });
@@ -57,6 +60,39 @@ function initializeBeatIndicators() {
     }
     
     console.log('Beat indicators initialized');
+}
+
+function initializeTrackControls() {
+    const container = document.querySelector('.track-controls-container');
+    if (!container) return;
+
+    sequencer.tracks.forEach(track => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'track-control';
+
+        const label = document.createElement('label');
+        label.textContent = `${track.name} Volume`;
+        label.setAttribute('for', `volume-${track.id}`);
+
+        const slider = document.createElement('input');
+        slider.type = 'range';
+        slider.min = '0';
+        slider.max = '1';
+        slider.step = '0.01';
+        slider.value = '1';
+        slider.id = `volume-${track.id}`;
+
+        slider.addEventListener('input', (e) => {
+            const volume = parseFloat(e.target.value);
+            audioEngine.setTrackVolume(track.id, volume);
+        });
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(slider);
+        container.appendChild(wrapper);
+    });
+
+    console.log('Track controls initialized');
 }
 
 function initializeApplication() {
